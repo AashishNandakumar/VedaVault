@@ -1,81 +1,106 @@
-# Ramayan book store
+# VedaVault
 
-> APIs available for this project
-![Screenshot 2024-03-03 at 15-00-03 SF Webmasters API](https://github.com/AashishNandakumar/SF-backend/assets/98106129/031e661a-28d1-48fb-813e-74f8cbb7e804)
+> Crowdsourced Digital Library of Indian Vedas and Scriptures
 
+1. VedaVault aims to create a comprehensive digital library of ancient Indian Vedas, scriptures, and books through
+   crowdsourcing.
+2. It will allow people to upload scanned images or digital copies of rare manuscripts, books, or documents related to
+   Vedas and other Indian religious/philosophical texts.
+3. Users can browse and access the digital library to view, study, or purchase the uploaded content. A portion of the
+   proceeds will go to the content contributors.
+4. The project will focus on digitizing and preserving important works and commentaries by scholars.
+5. VedaVault will make these ancient texts accessible globally, enabling enthusiasts, researchers, and students to
+   explore India's rich scriptural heritage.
+6. Advanced features like searchable metadata, annotations, and cross-linking with related texts can enhance the user
+   experience.
+7. Rigorous validation and quality checks will be done to ensure authenticity of the uploaded content.
+8. The digital library can be expanded to include translations, transliterations, and scholarly works on Vedas and
+   Indian philosophy.
 
-> Built in Django
+> Built using Django, React.Js and AWS
 
 ## Getting Started
 
-These instructions will get your copy of the project up and running on your local machine for development and testing purposes.
-
-### Prerequisites
-
-- Python 3.x
-- pip (Python package manager)
+These instructions will get your copy of the project up and running on your local machine for development and testing
+purposes.
 
 ### Clone the Project
-After creating the venv in the root directory execute the following command:
-```bash
-git clone https://github.com/AashishNandakumar/SF-backend.git
-```
 
-### Setting Up a Virtual Environment
+1. Clone the project in your machine by:
 
-It's recommended to use a virtual environment for Python projects. This keeps dependencies required by different projects separate by creating isolated environments for them.
+   ```bash
+   git clone https://github.com/AashishNandakumar/VedaVault.git
+   ```
 
-To create a virtual environment, navigate to your project directory in the terminal and run:
+### Initial Configurations and Settings
 
-```bash
-python3 -m venv venv
-```
-This command will create a virtual environment named `venv` in your project directory.
+We have used Docker for containerizing our application for efficient replication across different systems for easier
+setup.
 
-### Activating the Virtual Environment
-Before installing the dependencies, you need to activate the virtual environment.
+1. Navigate to the `VedaVault` directory by (Important for all other Instructions):
+    ```bash
+    cd VedaVault
+    ```
+2. Setup Docker in your machine by executing the bash script:
+    ```bash
+   bash docker_commands.bash
+   ```
+3. Verify Docker and Docker-Compose is installed in your machine by:
+   ```bash
+   docker --version
+    ```
+   and
+    ```bash
+   docker-compose --version
+    ```
 
-On macOS and Linux:
-```bash
-source venv/bin/activate
-```
+### Setting up Environment Configurations
 
-On windows:
-```bash
-.\venv\Scripts\activate
-```
+1. Create a .env file by:
+    ```bash
+   touch .env
+    ```
 
-### Installing Dependencies
-With the virtual environment activated, install the project dependencies by running:
-```bash
-pip install -r requirements.txt
-```
-This command reads the `requirements.txt` file in your project directory and installs all the necessary packages listed there.
+2. Open the .env file:
+    ```bash
+   nano .env
+    ```
+3. Fill it with the following Environment variables:
+    ```bash
+    MYSQL_USER='your_username'
+    MYSQL_PASSWORD='your_password'
+    MYSQL_ROOT_PASSWORD='your_root_password'
+    MYSQL_DATABASE_NAME='your_database_name'
+    ```
 
-### Applying Migrations
-Django uses migrations to propagate changes made to models (adding a field, deleting a model, etc.) into the database schema. Run the following commands to apply migrations:
-```
-python manage.py makemigrations
-python manage.py migrate
-```
+### Building the Image
 
-### Creating a Superuser
-To access the Django admin, you'll need to create a superuser account in the database. Run the following command and follow the prompts:
-```bash
-python manage.py createsuperuser
-```
+1. Build the Application's Images by running:
+    ```bash
+    sudo docker-compose up --build
+    ```
+2. Stop the Container(keyboard shortcut):
+    ```bash
+    ctrl + c
+    ```
+3. Launch a Container from the Image built
+   ```bash
+   docker-compose up
+   ```
+   
+4. You should now see something like this in the terminal:
 
-### Fill the required credentials in .env
-```bash
-MYSQL_USER='username'
-MYSQL_PASSWORD='password'
-MYSQL_ROOT_PASSWORD='root_password'
-MYSQL_DATABASE_NAME='database_name'
-```
+   ```bash
+   Starting development server at http://0.0.0.0:8000/
+   ```
 
-### Running the development server
-To start the Django development server, run:
-```bash
-python manage.py runserver
-```
-This will start the server on `http://127.0.0.1:8000/` by default. You can access the application by visiting this URL in your web browser.
+5. Click on the link or copy-paste the link into the browser.
+
+### Interacting with the application
+
+1. Goto the following url to see the list of available endpoints:
+   ```bash
+   http://0.0.0.0:8000/docs
+   ```
+
+2. Use the endpoints as necessary.
