@@ -53,5 +53,5 @@ sqlparse==0.4.4
 twilio==9.0.0
 typing_extensions==4.10.0
 uritemplate==4.1.1
-urllib3
+urllib3==2.2.1
 yarl==1.9.4
