@@ -20,6 +20,7 @@
 > Built using Django, React.Js and AWS
 
 ## Getting Started
+> The following instructions currently work only in Linux systems.
 
 These instructions will get your copy of the project up and running on your local machine for development and testing
 purposes.
@@ -77,7 +78,7 @@ setup.
 
 1. Build the Application's Images by running:
     ```bash
-    sudo docker-compose up --build
+    docker-compose up --build
     ```
 2. Stop the Container(keyboard shortcut):
     ```bash
