@@ -1,0 +1,53 @@
+version: '3.8'  # docker-compose version
+
+services:  # defines the containers that will run as a part of your application
+  db:  # this is 'db' service container
+    image: mysql:latest  # the mysql version on my dev environment becomes the base image of this container
+    volumes:
+      - mysql_data:/var/lib/mysql  # mount 'mysql_data' to 'var/lib/mysql' inside the container this is where mysql stores data
+    restart: always  # if container stops or crashes it will restart(policy)
+    environment: # sets environment variables inside the container, these will be used by mysql image to configure the DB
+      MYSQL_DATABASE: '${MYSQL_DATABASE_NAME}'
+      MYSQL_USER: '${MYSQL_USER}'
+      MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
+      MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD}'
+    ports:
+      - "3306:3306"  # maps port 3306(on host) to 3306(inside the container) allowing u to connect mysql DB from the host
+    networks:
+      - backend  # connect this container to a network, allows containers to communicate to each other using this network
+
+  redis:
+    image: redis:latest  # use the latest image of redis
+    restart: always  # always restart when the container crashes or stops
+    ports:
+      - "6379:6379"  # map port 6379(on host) to 6379(in the container)
+    networks:
+      - backend  # connect this container to a network, allows containers to communicate to each other using this network
+
+  web:
+    build: .  # build an image for this 'web' service using the 'Dockerfile' in the current directory
+    command: python manage.py runserver 0.0.0.0:8000  # this runs the django dev server on all network interfaces at port 8000
+    volumes:
+      - .:/app  # mount the current directory to /app inside the container
+    ports:
+      - "8000:8000"  # maps port 8000(on host) to 8000(inside the container)
+    depends_on:
+      - db  # this ensures that 'db' service is started(running but not ready) before the 'web' service
+      - redis  # this ensures that 'redis' service is started(running but not ready before the 'web' service
+    environment:  # specify the environment variables inside the container which will be utilized by Django
+      DEBUG: '1'
+      DB_NAME: '${MYSQL_DATABASE_NAME}'
+      DB_USER: '${MYSQL_USER}'
+      DB_PASS: '${MYSQL_PASSWORD}'
+      DB_SERVICE: 'db'
+      DB_PORT: '3306'
+      REDIS_LOCATION: 'redis://redis:6379/1'  # redis(1st one) is the scheme, redis(2nd one) with the help of Docker's internal DNS resolver, allows services to communicate with each other using service names as hostnames
+    networks:
+      - backend  # connect this container to a network, allows containers to interact with each other
+
+networks:
+  backend:  # network named 'backend'
+    driver: bridge  # this allows containers connected on the same network to communicate while isolating them from containers on other networks
+
+volumes:
+  mysql_data:  # declares a 'named volume'(for persistence) named 'mysql_data' which is used by 'db', Docker manages this volume independently of the life cycle of the containers, allowing data to persist across container restarts and rebuilds
