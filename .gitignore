@@ -5,8 +5,10 @@ bin-release/
 [Bb]in/
 .idea
 
+
 # Other files and folders
 .settings/
+db.sqlite3
 
 # Executables
 *.swf
