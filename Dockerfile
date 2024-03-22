@@ -27,4 +27,4 @@ RUN pip install -r requirements.txt
 EXPOSE 8000
 
 # run migrate and then start the Django dev server
-CMD ["python manage.py wait_for_db && python manage.py wait_for_redis && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+CMD ["sh", "-c", "python manage.py wait_for_db && python manage.py wait_for_redis && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
