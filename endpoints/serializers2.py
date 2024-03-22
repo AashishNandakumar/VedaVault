@@ -160,7 +160,7 @@ class AdminResetPasswordSerializer(serializers.Serializer):
 class SubSubCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SubSubCategories
-        fields = ['name', 'description', 'image', 'document']
+        fields = ['id', 'name', 'description', 'image', 'document', 'subcategory']
 
 
 class SubCategorySerializer(serializers.ModelSerializer):
@@ -168,7 +168,7 @@ class SubCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SubCategories
-        fields = ['name', 'description', 'image', 'subsubcategories']
+        fields = ['id', 'name', 'description', 'image', 'category', 'subsubcategories']
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -176,4 +176,4 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Categories
-        fields = ['name', 'description', 'image', 'subcategories']
+        fields = ['id', 'name', 'description', 'image', 'subcategories']

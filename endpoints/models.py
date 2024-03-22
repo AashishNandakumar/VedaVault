@@ -57,19 +57,19 @@ class CustomUser(AbstractUser):
 class Categories(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
-    image = models.ImageField(upload_to='category_images/')
+    image = models.URLField()
 
 
 class SubCategories(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
-    image = models.ImageField(upload_to='subcategory_images/')
+    image = models.URLField()
     category = models.ForeignKey(Categories, on_delete=models.CASCADE, related_name='subcategories')
 
 
 class SubSubCategories(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
-    image = models.ImageField(upload_to='subsubcategory_images/')
-    document = models.FileField(upload_to='subsubcategory_documents/')
+    image = models.URLField()
+    document = models.URLField()
     subcategory = models.ForeignKey(SubCategories, on_delete=models.CASCADE, related_name='subsubcategories')
