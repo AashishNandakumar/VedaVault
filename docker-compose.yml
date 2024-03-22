@@ -11,10 +11,13 @@ services:  # defines the containers that will run as a part of your application
       MYSQL_USER: '${MYSQL_USER}'
       MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
       MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_ROOT_HOST: '%'
     ports:
       - "3306:3306"  # maps port 3306(on host) to 3306(inside the container) allowing u to connect mysql DB from the host
     networks:
       - backend  # connect this container to a network, allows containers to communicate to each other using this network
+    command: --default-authentication-plugin=mysql_native_password
 
   redis:
     image: redis:latest  # use the latest image of redis
@@ -26,7 +29,7 @@ services:  # defines the containers that will run as a part of your application
 
   web:
     build: .  # build an image for this 'web' service using the 'Dockerfile' in the current directory
-    command: python manage.py runserver 0.0.0.0:8000  # this runs the django dev server on all network interfaces at port 8000
+    command: sh -c "wait-for-it db:3306 -- python manage.py migrate && python manage.py runserver 0.0.0.0:8000"  # this runs the django dev server on all network interfaces at port 8000
     volumes:
       - .:/app  # mount the current directory to /app inside the container
     ports:

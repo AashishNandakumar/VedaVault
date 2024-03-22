@@ -1,11 +1,15 @@
+import os
 import random
+from urllib.parse import urlparse
+
+import boto3
+import redis
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from django.conf import settings
-from urllib.parse import urlparse
-import redis
+
 from .models import Categories, SubCategories, SubSubCategories
 
 User = get_user_model()  # get the current User model being utilized
@@ -95,6 +99,23 @@ class AdminForgotPasswordSerializer(serializers.Serializer):
                     print(f"OTP for {phone_number}: {otp}")
 
                     # TODO: Send the OTP to the client
+                    """
+                    sns_client = boto3.client('sns',
+                                              aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                                              aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                                              region_name=settings.AWS_S3_REGION_NAME)
+
+                    sns_client.publish(
+                        PhoneNumber=phone_number,  # E.164 format
+                        Message=f"Your OTP for VedaVault is: {otp}",
+                        MessageAttributes={
+                            'AWS.SNS.SMS.SMSType': {
+                                'DataType': 'String',
+                                'StringValue': 'Transactional'
+                            }
+                        }
+                    )
+                    """
                     data['otp'] = otp
                     return data
                 else:
@@ -137,7 +158,6 @@ class AdminResetPasswordSerializer(serializers.Serializer):
 
 
 class SubSubCategorySerializer(serializers.ModelSerializer):
-
     class Meta:
         model = SubSubCategories
         fields = ['name', 'description', 'image', 'document']

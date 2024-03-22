@@ -14,5 +14,6 @@ urlpatterns = [
     path('admin-signin', views2.AdminSignin.as_view()),
     path('admin-forgot-password', views2.AdminForgotPassword.as_view()),
     path('admin-reset-password', views2.AdminResetPassword.as_view()),
+    path('generate-file-url', views2.S3UploadView.as_view()),
     path('', include(router.urls))
 ]

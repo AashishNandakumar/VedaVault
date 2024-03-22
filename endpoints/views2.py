@@ -118,13 +118,14 @@ class S3UploadView(APIView):
 
         s3Client = boto3.client('s3',
                                 aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                                aws_secret_access_key=settings.AWS_SECRET_ACCES_KEY,
+                                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
                                 region_name=settings.AWS_S3_REGION_NAME)
 
         bucket_name = settings.AWS_S3_BUCKET_NAME
-        file_name = file_type.name
+        file_name = file_obj.name
         key = f"uploads/{file_name}"
 
+        print(settings.AWS_ACCESS_KEY_ID)
         s3Client.upload_fileobj(file_obj, bucket_name, key, ExtraArgs={'ContentType': file_type})
 
         file_url = f"https://{bucket_name}.s3.amazonaws.com/{key}"
