@@ -1,5 +1,4 @@
 import random
-
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404
@@ -7,6 +6,7 @@ from rest_framework import serializers
 from django.conf import settings
 from urllib.parse import urlparse
 import redis
+from .models import Categories, SubCategories, SubSubCategories
 
 User = get_user_model()  # get the current User model being utilized
 
@@ -134,3 +134,26 @@ class AdminResetPasswordSerializer(serializers.Serializer):
 
         else:
             raise serializers.ValidationError("'Username', 'OTP', 'New Password' are required")
+
+
+class SubSubCategorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SubSubCategories
+        fields = ['name', 'description', 'image', 'document']
+
+
+class SubCategorySerializer(serializers.ModelSerializer):
+    subsubcategories = SubSubCategorySerializer(many=True, read_only=True)
+
+    class Meta:
+        model = SubCategories
+        fields = ['name', 'description', 'image', 'subsubcategories']
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    subcategories = SubCategorySerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Categories
+        fields = ['name', 'description', 'image', 'subcategories']

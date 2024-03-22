@@ -3,6 +3,6 @@ from . import models
 
 # Register your models here.
 
-admin.site.register(models.Category)
-admin.site.register(models.SubCategory)
-admin.site.register(models.SubSubCategory)
+admin.site.register(models.Categories)
+admin.site.register(models.SubCategories)
+admin.site.register(models.SubSubCategories)

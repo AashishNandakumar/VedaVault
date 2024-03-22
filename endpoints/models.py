@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-
+"""
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField()
@@ -30,6 +30,7 @@ class SubSubCategory(models.Model):
 
     def __str__(self):
         return self.name
+"""
 
 
 class CustomUser(AbstractUser):
@@ -51,3 +52,24 @@ class CustomUser(AbstractUser):
         verbose_name='user permissions',
 
     )
+
+
+class Categories(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    image = models.ImageField(upload_to='category_images/')
+
+
+class SubCategories(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    image = models.ImageField(upload_to='subcategory_images/')
+    category = models.ForeignKey(Categories, on_delete=models.CASCADE, related_name='subcategories')
+
+
+class SubSubCategories(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    image = models.ImageField(upload_to='subsubcategory_images/')
+    document = models.FileField(upload_to='subsubcategory_documents/')
+    subcategory = models.ForeignKey(SubCategories, on_delete=models.CASCADE, related_name='subsubcategories')

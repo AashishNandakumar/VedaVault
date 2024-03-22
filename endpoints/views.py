@@ -437,12 +437,3 @@ class UpdateUserData(APIView):
         except Exception as e:
             print("Error in updating user information: ", e)
             return Response({"Error": "error in updating user information"})
-
-
-"""
-'Views' version 2 support
-"""
-class AdminSignup(APIView):
-
-    def post(self, request):
-        pass

@@ -19,6 +19,4 @@ urlpatterns = [
     path("generate-uuid", views.GenerateUUID.as_view()),  # GET. Fetch UUID to rename the files from the client(so that every filename in S3 is unique)
     path("generate-signed-url-and-store-reference", views.GenerateSignedURLAndStoreReference.as_view()),  # GET. Fetch signed URL, push the file to S3, give back the file details to backend so that it stores the reference to S3
 
-    # API version 2
-
 ]

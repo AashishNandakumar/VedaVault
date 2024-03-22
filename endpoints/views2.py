@@ -1,10 +1,13 @@
 from django.contrib.auth import get_user_model
 from rest_framework import status
+from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
+from .models import Categories, SubCategories, SubSubCategories
 
 from . import serializers2
+
 
 User = get_user_model()
 
@@ -104,3 +107,19 @@ class AdminResetPassword(APIView):
         except Exception as e:
             print("Error while verifying OTP: ", e)
             return Response({"Error": "Failed to verify OTP"}, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Categories.objects.all()
+    serializer_class = serializers2.CategorySerializer
+
+
+class SubCategoryViewSet(viewsets.ModelViewSet):
+    queryset = SubCategories.objects.all()
+    serializer_class = serializers2.SubCategorySerializer
+
+
+class SubSubCategoryViewSet(viewsets.ModelViewSet):
+    queryset = SubSubCategories.objects.all()
+    serializer_class = serializers2.SubSubCategorySerializer
+

@@ -67,8 +67,8 @@ urlpatterns = [
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger'),
     path('docs/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
-    path("v1/", include("endpoints.urls")),  # handle all custom endpoints in the 'endpoints' app itself
-    path("v2/", include("endpoints.urls2")),
+    # path("v1/", include("endpoints.urls")),  # handle all custom endpoints in the 'endpoints' app itself
+    path("api/v2/", include("endpoints.urls2")),
     # path("auth/", include("djoser.urls")),  # Djoser: library that provides ready to use endpoints for authentication
     # path("auth/", include("djoser.urls.jwt"))  # Djoser: library that provides ready to use endpoints for authentication
 

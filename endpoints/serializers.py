@@ -2,7 +2,7 @@ from django.contrib.auth.models import Group, User
 from rest_framework import serializers
 from . import models
 
-
+"""
 class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -64,3 +64,4 @@ class SubSubCategorySerializerOnId(serializers.ModelSerializer):
     class Meta:
         model = models.SubSubCategory
         fields = ["name", "description", "image_url", "sub_category_id"]
+"""

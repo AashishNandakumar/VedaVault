@@ -32,6 +32,7 @@ MarkupSafe==2.1.5
 multidict==6.0.5
 oauthlib==3.2.2
 packaging==23.2
+pillow==10.2.0
 pycparser==2.21
 PyJWT==2.8.0
 PyMySQL==1.1.0
@@ -53,5 +54,5 @@ sqlparse==0.4.4
 twilio==9.0.0
 typing_extensions==4.10.0
 uritemplate==4.1.1
-urllib3==2.2.1
+urllib3
 yarl==1.9.4
