@@ -80,23 +80,17 @@ setup.
     ```bash
     docker-compose up --build
     ```
-2. Stop the Container(keyboard shortcut):
-    ```bash
-    ctrl + c
-    ```
-3. Launch a Container from the Image built
-   ```bash
-   docker-compose up
-   ```
    
-4. You should now see something like this in the terminal:
+2. You should now see something like this in the terminal:
 
    ```bash
    Starting development server at http://0.0.0.0:8000/
    ```
 
-5. Click on the link or copy-paste the link into the browser.
-
+3. Click on the following link or copy-paste the link into the browser.
+   ```bash
+    http://0.0.0.0:8000/
+      ```
 ### Interacting with the application
 
 1. Goto the following url to see the list of available endpoints:
