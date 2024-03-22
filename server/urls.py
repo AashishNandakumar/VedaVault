@@ -48,9 +48,9 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="SF Webmasters API",
-        default_version='v1',
-        description="Ramayan Book Store APIs",
+        title="VedaVault APIs",
+        default_version='v2',
+        description="Crowdsourced Digital Library of Indian Vedas and Scriptures",
         terms_of_service='NA',
         contact=openapi.Contact(email="aashishnkumar@gmail.com"),
         license=openapi.License(name="MIT License"),

@@ -41,6 +41,11 @@ services:  # defines the containers that will run as a part of your application
       DB_PASS: '${MYSQL_PASSWORD}'
       DB_SERVICE: 'db'
       DB_PORT: '3306'
+      AWS_ACCESS_KEY_ID: '${AWS_ACCESS_KEY_ID}'
+      AWS_SECRET_ACCESS_KEY: '${AWS_SECRET_ACCESS_KEY}'
+      AWS_S3_BUCKET_NAME: '${AWS_S3_BUCKET_NAME}'
+      AWS_S3_REGION_NAME: '${AWS_S3_REGION_NAME}'
+      AWS_S3_SIGNATURE_VERSION: '${AWS_S3_SIGNATURE_VERSION}'
       REDIS_LOCATION: 'redis://redis:6379/1'  # redis(1st one) is the scheme, redis(2nd one) with the help of Docker's internal DNS resolver, allows services to communicate with each other using service names as hostnames
     networks:
       - backend  # connect this container to a network, allows containers to interact with each other

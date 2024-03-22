@@ -1,13 +1,14 @@
+import boto3
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Categories, SubCategories, SubSubCategories
 
 from . import serializers2
-
+from .models import Categories, SubCategories, SubSubCategories
 
 User = get_user_model()
 
@@ -77,7 +78,8 @@ class AdminForgotPassword(APIView):
             serializer.is_valid(raise_exception=True)
             otp = serializer.validated_data.get('otp')  # only for testing purpose
 
-            return Response({"Success": f"Successfully generated OTP for 'Password' reset - {otp}"}, status.HTTP_201_CREATED)
+            return Response({"Success": f"Successfully generated OTP for 'Password' reset - {otp}"},
+                            status.HTTP_201_CREATED)
         except Exception as e:
             print("Error while 'Generating-OTP': ", e)
             return Response({"Error": "Failed to generate OTP"}, status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -109,6 +111,27 @@ class AdminResetPassword(APIView):
             return Response({"Error": "Failed to verify OTP"}, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+class S3UploadView(APIView):
+    def post(self, request):
+        file_obj = request.data.get('file')
+        file_type = file_obj.content_type
+
+        s3Client = boto3.client('s3',
+                                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                                aws_secret_access_key=settings.AWS_SECRET_ACCES_KEY,
+                                region_name=settings.AWS_S3_REGION_NAME)
+
+        bucket_name = settings.AWS_S3_BUCKET_NAME
+        file_name = file_type.name
+        key = f"uploads/{file_name}"
+
+        s3Client.upload_fileobj(file_obj, bucket_name, key, ExtraArgs={'ContentType': file_type})
+
+        file_url = f"https://{bucket_name}.s3.amazonaws.com/{key}"
+
+        return Response({'file_url': file_url}, status.HTTP_201_CREATED)
+
+
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Categories.objects.all()
     serializer_class = serializers2.CategorySerializer
@@ -122,4 +145,3 @@ class SubCategoryViewSet(viewsets.ModelViewSet):
 class SubSubCategoryViewSet(viewsets.ModelViewSet):
     queryset = SubSubCategories.objects.all()
     serializer_class = serializers2.SubSubCategorySerializer
-

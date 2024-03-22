@@ -190,6 +190,14 @@ SIMPLE_JWT = {
 
 AUTH_USER_MODEL = 'endpoints.CustomUser'
 
+# AWS configurations
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_S3_BUCKET_NAME = os.getenv('AWS_S3_BUCKET_NAME')
+AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
+AWS_S3_SIGNATURE_VERSION = os.getenv('AWS_S3_SIGNATURE_VERSION')
+AWS_S3_FILE_OVERWRITE = False
+
 """
 {
     "Success": "Success in 'Admin-Signup'",
