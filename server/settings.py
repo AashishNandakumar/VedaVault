@@ -56,6 +56,7 @@ THIRD_PARTY_APPS = [
     "drf_spectacular",
     "djoser",
     'drf_yasg',
+    "corsheaders"
 ]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
@@ -63,12 +64,16 @@ INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = "server.urls"
 
@@ -197,10 +202,3 @@ AWS_S3_BUCKET_NAME = os.getenv('AWS_S3_BUCKET_NAME')
 AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
 AWS_S3_SIGNATURE_VERSION = os.getenv('AWS_S3_SIGNATURE_VERSION')
 AWS_S3_FILE_OVERWRITE = False
-
-"""
-{
-    "Success": "Success in 'Admin-Signup'",
-    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxNTM0MTc4NiwiaWF0IjoxNzExMDIxNzg2LCJqdGkiOiIyNWYwZWQwNDJhNzQ0NWQ2YTQ3OWI5NmNmY2ZjM2IzZiIsInVzZXJfaWQiOjJ9.J4cfNaU--FnVFQ634EMh1T__fQcGKlQHyk_uDcY6J40",
-    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzExNDUzNzg2LCJpYXQiOjE3MTEwMjE3ODYsImp0aSI6ImU3Y2NjYjQyMDMwZjQ2NThiMThkYmRlMWYzMTliMTkzIiwidXNlcl9pZCI6Mn0.ibhLzitZArHqqZ4efcVmOhoEnTcbx64GZ5DvxYmVINg"
-"""
