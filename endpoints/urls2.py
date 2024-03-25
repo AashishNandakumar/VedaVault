@@ -12,7 +12,8 @@ router.register(r'subsubcategories', SubSubCategoryViewSet)
 urlpatterns = [
     path('admin-signup', views2.AdminSignup.as_view()),
     path('admin-signin', views2.AdminSignin.as_view()),
-    path('admin-forgot-password', views2.AdminForgotPassword.as_view()),
+    path('generate-otp', views2.OTPGenerator.as_view()),
+    path('verify-otp', views2.OTPVerifier.as_view()),
     path('admin-reset-password', views2.AdminResetPassword.as_view()),
     path('generate-file-url', views2.S3UploadView.as_view()),
     path('', include(router.urls))

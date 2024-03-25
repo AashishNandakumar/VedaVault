@@ -1,6 +1,8 @@
 import os
 import random
 from urllib.parse import urlparse
+from .utlis.cache import RedisCache
+from .utlis.send_sms import SMSClient
 
 import boto3
 import redis
@@ -81,6 +83,7 @@ class AdminSigninSerializer(serializers.Serializer):
             raise serializers.ValidationError("Username and Password is required")
 
 
+"""
 class AdminForgotPasswordSerializer(serializers.Serializer):
     username = serializers.CharField()
 
@@ -99,7 +102,6 @@ class AdminForgotPasswordSerializer(serializers.Serializer):
                     print(f"OTP for {phone_number}: {otp}")
 
                     # TODO: Send the OTP to the client
-                    """
                     sns_client = boto3.client('sns',
                                               aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                                               aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
@@ -115,7 +117,6 @@ class AdminForgotPasswordSerializer(serializers.Serializer):
                             }
                         }
                     )
-                    """
                     data['otp'] = otp
                     return data
                 else:
@@ -124,37 +125,85 @@ class AdminForgotPasswordSerializer(serializers.Serializer):
                 raise serializers.ValidationError("Username does not exists")
         else:
             raise serializers.ValidationError("Username is required!")
+"""
+
+
+class OTPGeneratorSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=255)
+    reason = serializers.CharField(max_length=255)
+
+    def validate(self, data):
+        try:
+            username = data.get('username')
+            reason = data.get('reason')
+
+            user = get_object_or_404(User, username=username)
+
+            if username and reason:
+                generated_otp = random.randint(100000, 999999)
+                user_phone_number = user.phone_number
+
+                RedisCache.set_instance(username=username, otp=generated_otp)
+                SMSClient.send_otp_sms(phone_number=user_phone_number, reason=reason, otp=generated_otp)
+
+                data['phone_number'] = user_phone_number
+                data['username'] = username
+                data['otp'] = generated_otp
+                return data
+            else:
+                raise serializers.ValidationError("'Username' and 'Reason' are required")
+        except Exception as e:
+            print("Error occurred while generating OTP: ", e)
+            raise serializers.ValidationError(f"Error while generating OTP: {e}")
+
+
+class OTPVerifierSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=255)
+    otp = serializers.CharField(max_length=6)
+
+    def validate(self, data):
+        try:
+            username = data.get('username')
+            otp = data.get('otp')
+
+            if username and otp:
+                stored_otp = RedisCache.get_instance(username=username)
+
+                if not stored_otp or stored_otp != otp:
+                    data['status'] = 'FAILURE'
+                    raise serializers.ValidationError("OTP Expired or is Invalid")
+
+                data['status'] = 'SUCCESS'
+                return data
+            else:
+                raise serializers.ValidationError("'Username' and 'OTP' are required")
+        except Exception as e:
+            print("Error occurred while verifying OTP: ", e)
+            raise serializers.ValidationError(f"Error while verifying OTP: {e}")
 
 
 class AdminResetPasswordSerializer(serializers.Serializer):
     username = serializers.CharField()
-    otp = serializers.CharField()
     new_password = serializers.CharField()
 
     def validate(self, data):
         username = data.get('username')
-        otp = data.get('otp')
         new_password = data.get('new_password')
 
-        if username and otp and new_password:
+        if username and new_password:
             try:
                 user = get_object_or_404(User, username=username)
-                stored_otp = redis_instance.get(username)
-                print(stored_otp, otp)
-                if not stored_otp or stored_otp != otp:
-                    raise serializers.ValidationError("Invalid or Expired OTP")
-
-                print("ok lmo")
 
                 user.set_password(new_password)
                 user.save()
+
                 data['user'] = user
                 return data
             except Exception:
-                raise serializers.ValidationError("Error in verifying OTP")
+                raise serializers.ValidationError("Error in resetting Admin password")
 
         else:
-            raise serializers.ValidationError("'Username', 'OTP', 'New Password' are required")
+            raise serializers.ValidationError("'Username', 'New Password' are required")
 
 
 class SubSubCategorySerializer(serializers.ModelSerializer):

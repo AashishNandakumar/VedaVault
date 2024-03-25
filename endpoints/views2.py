@@ -65,13 +65,11 @@ class AdminSignin(APIView):
             return Response({"Error": "Error while 'Admin-Signin'"}, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+"""
 class AdminForgotPassword(APIView):
 
     def post(self, request):
-        """
-        :param request: 'username'
-        :return: Generates OTP
-        """
+        
         try:
             serializer = serializers2.AdminForgotPasswordSerializer(data=request.data)
 
@@ -83,13 +81,46 @@ class AdminForgotPassword(APIView):
         except Exception as e:
             print("Error while 'Generating-OTP': ", e)
             return Response({"Error": "Failed to generate OTP"}, status.HTTP_500_INTERNAL_SERVER_ERROR)
+"""
+
+
+class OTPGenerator(APIView):
+    def post(self, request):
+        try:
+            serializer = serializers2.OTPGeneratorSerializer(data=request.data)
+
+            serializer.is_valid(raise_exception=True)
+
+            username = serializer.validated_data.get('username')
+            phone_number = serializer.validated_data.get('phone_number')
+            otp = serializer.validated_data.get('otp')
+
+            print(f"OTP for phone number {phone_number} for user {username} is:  {otp}")
+            return Response({"Success": f"OTP for {phone_number} is {otp}"})
+        except Exception as e:
+            print("Error occurred while generating OTP: ", e)
+            return Response({"Error": "Failed to generate OTP"}, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class OTPVerifier(APIView):
+    def post(self, request):
+        try:
+            serializer = serializers2.OTPVerifierSerializer(data=request.data)
+
+            serializer.is_valid(raise_exception=True)
+            status_msg = serializer.validated_data.get('status')
+
+            return Response({"Success": "Successfully verified OTP", "status": status_msg})
+        except Exception as e:
+            print("Error occurred while verifying OTP: ", e)
+            return Response({"Error": "Failed to verify OTP"}, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class AdminResetPassword(APIView):
 
     def post(self, request):
         """
-        :param request: 'username', 'otp', 'new_password'
+        :param request: 'username', 'new_password'
         :return: Success ? Tokens : Error Message
         """
         try:
@@ -107,8 +138,8 @@ class AdminResetPassword(APIView):
                 status.HTTP_201_CREATED
             )
         except Exception as e:
-            print("Error while verifying OTP: ", e)
-            return Response({"Error": "Failed to verify OTP"}, status.HTTP_500_INTERNAL_SERVER_ERROR)
+            print("Error while Resetting Admin Password: ", e)
+            return Response({"Error": "Failed to Reset Admin Password"}, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class S3UploadView(APIView):
