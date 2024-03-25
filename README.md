@@ -18,6 +18,8 @@
    Indian philosophy.
 
 > Built using Django, React.Js and AWS
+## API Collection
+API collection for this project is available here - [VedaVault-Postman-Collection](https://www.postman.com/noire-aashish-nk/workspace/vedavault/collection/28604040-c0626192-e558-4c3f-86a6-658476d07744?action=share&creator=28604040&active-environment=28604040-67c98a1f-03fd-48b3-8afd-bc3330b1d080)
 
 ## Getting Started
 > The following instructions currently work only in Linux systems.
