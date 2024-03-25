@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 
 """
 class Category(models.Model):
@@ -55,20 +55,20 @@ class CustomUser(AbstractUser):
 
 
 class Categories(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, primary_key=True)
     description = models.TextField()
     image = models.URLField()
 
 
 class SubCategories(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, primary_key=True)
     description = models.TextField()
     image = models.URLField()
     category = models.ForeignKey(Categories, on_delete=models.CASCADE, related_name='subcategories')
 
 
 class SubSubCategories(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, primary_key=True)
     description = models.TextField()
     image = models.URLField()
     document = models.URLField()

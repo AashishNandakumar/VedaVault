@@ -37,8 +37,8 @@ class AdminSignup(APIView):
             )
         except Exception as e:
             print("Error while 'Admin-Signup': ", e)
-
-            return Response({"Error": "Error while 'Admin-Signup'"}, status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"Error": "Error while 'Admin-Signup'", "ERROR": f"{e}"},
+                            status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class AdminSignin(APIView):
@@ -62,26 +62,8 @@ class AdminSignin(APIView):
 
         except Exception as e:
             print("Error while 'Admin-Signin': ", e)
-            return Response({"Error": "Error while 'Admin-Signin'"}, status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-"""
-class AdminForgotPassword(APIView):
-
-    def post(self, request):
-        
-        try:
-            serializer = serializers2.AdminForgotPasswordSerializer(data=request.data)
-
-            serializer.is_valid(raise_exception=True)
-            otp = serializer.validated_data.get('otp')  # only for testing purpose
-
-            return Response({"Success": f"Successfully generated OTP for 'Password' reset - {otp}"},
-                            status.HTTP_201_CREATED)
-        except Exception as e:
-            print("Error while 'Generating-OTP': ", e)
-            return Response({"Error": "Failed to generate OTP"}, status.HTTP_500_INTERNAL_SERVER_ERROR)
-"""
+            return Response({"Error": "Error while 'Admin-Signin'", "ERROR": f"{e}"},
+                            status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class OTPGenerator(APIView):
@@ -99,7 +81,7 @@ class OTPGenerator(APIView):
             return Response({"Success": f"OTP for {phone_number} is {otp}"})
         except Exception as e:
             print("Error occurred while generating OTP: ", e)
-            return Response({"Error": "Failed to generate OTP"}, status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"Error": "Failed to generate OTP", "ERROR": f"{e}"}, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class OTPVerifier(APIView):
@@ -113,7 +95,7 @@ class OTPVerifier(APIView):
             return Response({"Success": "Successfully verified OTP", "status": status_msg})
         except Exception as e:
             print("Error occurred while verifying OTP: ", e)
-            return Response({"Error": "Failed to verify OTP"}, status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"Error": "Failed to verify OTP", "ERROR": f"{e}"}, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class AdminResetPassword(APIView):
@@ -139,7 +121,8 @@ class AdminResetPassword(APIView):
             )
         except Exception as e:
             print("Error while Resetting Admin Password: ", e)
-            return Response({"Error": "Failed to Reset Admin Password"}, status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"Error": "Failed to Reset Admin Password", "ERROR": f"{e}"},
+                            status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class S3UploadView(APIView):

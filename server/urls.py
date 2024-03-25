@@ -37,14 +37,12 @@ urlpatterns = [
 ]+router.urls
 """
 
-
 # code by Aashish
 from django.contrib import admin
 from django.urls import path, include, re_path
-from rest_framework import permissions
-from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -67,10 +65,10 @@ urlpatterns = [
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger'),
     path('docs/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
-    # path("v1/", include("endpoints.urls")),  # handle all custom endpoints in the 'endpoints' app itself
+    # path("api/v1/", include("endpoints.urls")),  # handle all custom endpoints in the 'endpoints' app itself
     path("api/v2/", include("endpoints.urls2")),
-    # path("auth/", include("djoser.urls")),  # Djoser: library that provides ready to use endpoints for authentication
-    # path("auth/", include("djoser.urls.jwt"))  # Djoser: library that provides ready to use endpoints for authentication
+    path("auth/", include("djoser.urls")),  # Djoser: library that provides ready to use endpoints for authentication
+    path("auth/", include("djoser.urls.jwt"))  # Djoser: library that provides ready to use endpoints for authentication
 
 ]
 

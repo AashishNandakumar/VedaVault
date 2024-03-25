@@ -1,25 +1,15 @@
-import os
 import random
-from urllib.parse import urlparse
-from .utlis.cache import RedisCache
-from .utlis.send_sms import SMSClient
 
-import boto3
-import redis
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
 from .models import Categories, SubCategories, SubSubCategories
+from .utlis.cache import RedisCache
+from .utlis.send_sms import SMSClient
 
 User = get_user_model()  # get the current User model being utilized
-
-redis_url = urlparse(settings.CACHES['default']['LOCATION'])
-redis_host = redis_url.hostname
-redis_port = redis_url.port
-redis_instance = redis.StrictRedis(host=redis_host, port=redis_port, db=0, decode_responses=True)
 
 
 class AdminSignupSerializer(serializers.ModelSerializer):
@@ -45,7 +35,7 @@ class AdminSignupSerializer(serializers.ModelSerializer):
     # TODO: can add input validation methods here
     def validate_username(self, value):
         if User.objects.filter(username=value).exists():
-            raise serializers.ValidationError("Username already exists")
+            raise Exception("Username already exists")
         return value
 
     def validate_phone_number(self, value):
@@ -54,7 +44,7 @@ class AdminSignupSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Phone number must only consist digits")
         """
         if len(value) > 15:
-            raise serializers.ValidationError("Phone number is invalid")
+            raise Exception("Phone number is invalid")
         return value
 
 
@@ -63,69 +53,26 @@ class AdminSigninSerializer(serializers.Serializer):
     password = serializers.CharField()
 
     def validate(self, data):
-        username = data.get('username')
-        password = data.get('password')
+        try:
+            username = data.get('username')
+            password = data.get('password')
 
-        if username and password:
-            try:
+            if username and password:
                 user = get_object_or_404(User, username=username)
                 if user.check_password(password):
                     if user.groups.filter(name='Admin').exists():
                         data['user'] = user
                         return data
                     else:
-                        raise serializers.ValidationError("User is not Admin")
+                        raise Exception("User is not Admin")
                 else:
-                    raise serializers.ValidationError("Passwords do not match")
-            except Exception as e:
-                raise serializers.ValidationError("Invalid credentials")
-        else:
-            raise serializers.ValidationError("Username and Password is required")
+                    raise Exception("Passwords do not match")
 
-
-"""
-class AdminForgotPasswordSerializer(serializers.Serializer):
-    username = serializers.CharField()
-
-    def validate(self, data):
-        username = data.get('username')
-
-        if username:
-            try:
-                user = get_object_or_404(User, username=username)
-
-                if user.groups.filter(name='Admin').exists():
-                    phone_number = user.phone_number
-                    otp = random.randint(100000, 999999)
-
-                    redis_instance.set(username, otp, ex=500)  # otp expiry = 500 secs (for testing only)
-                    print(f"OTP for {phone_number}: {otp}")
-
-                    # TODO: Send the OTP to the client
-                    sns_client = boto3.client('sns',
-                                              aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                                              aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-                                              region_name=settings.AWS_S3_REGION_NAME)
-
-                    sns_client.publish(
-                        PhoneNumber=phone_number,  # E.164 format
-                        Message=f"Your OTP for VedaVault is: {otp}",
-                        MessageAttributes={
-                            'AWS.SNS.SMS.SMSType': {
-                                'DataType': 'String',
-                                'StringValue': 'Transactional'
-                            }
-                        }
-                    )
-                    data['otp'] = otp
-                    return data
-                else:
-                    raise serializers.ValidationError("User is not Admin")
-            except Exception:
-                raise serializers.ValidationError("Username does not exists")
-        else:
-            raise serializers.ValidationError("Username is required!")
-"""
+            else:
+                raise serializers.ValidationError("Username and Password is required")
+        except Exception as e:
+            print("Error while Admin sign-in: ", e)
+            raise Exception(e)
 
 
 class OTPGeneratorSerializer(serializers.Serializer):
@@ -154,7 +101,7 @@ class OTPGeneratorSerializer(serializers.Serializer):
                 raise serializers.ValidationError("'Username' and 'Reason' are required")
         except Exception as e:
             print("Error occurred while generating OTP: ", e)
-            raise serializers.ValidationError(f"Error while generating OTP: {e}")
+            raise Exception(e)
 
 
 class OTPVerifierSerializer(serializers.Serializer):
@@ -171,7 +118,7 @@ class OTPVerifierSerializer(serializers.Serializer):
 
                 if not stored_otp or stored_otp != otp:
                     data['status'] = 'FAILURE'
-                    raise serializers.ValidationError("OTP Expired or is Invalid")
+                    raise Exception("OTP Expired or is Invalid")
 
                 data['status'] = 'SUCCESS'
                 return data
@@ -179,7 +126,7 @@ class OTPVerifierSerializer(serializers.Serializer):
                 raise serializers.ValidationError("'Username' and 'OTP' are required")
         except Exception as e:
             print("Error occurred while verifying OTP: ", e)
-            raise serializers.ValidationError(f"Error while verifying OTP: {e}")
+            raise Exception(e)
 
 
 class AdminResetPasswordSerializer(serializers.Serializer):
@@ -187,11 +134,11 @@ class AdminResetPasswordSerializer(serializers.Serializer):
     new_password = serializers.CharField()
 
     def validate(self, data):
-        username = data.get('username')
-        new_password = data.get('new_password')
+        try:
+            username = data.get('username')
+            new_password = data.get('new_password')
 
-        if username and new_password:
-            try:
+            if username and new_password:
                 user = get_object_or_404(User, username=username)
 
                 user.set_password(new_password)
@@ -199,17 +146,17 @@ class AdminResetPasswordSerializer(serializers.Serializer):
 
                 data['user'] = user
                 return data
-            except Exception:
-                raise serializers.ValidationError("Error in resetting Admin password")
-
-        else:
-            raise serializers.ValidationError("'Username', 'New Password' are required")
+            else:
+                raise serializers.ValidationError("'Username', 'New Password' are required")
+        except Exception as e:
+            print("Error occurred while resetting admin password OTP: ", e)
+            raise Exception(e)
 
 
 class SubSubCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SubSubCategories
-        fields = ['id', 'name', 'description', 'image', 'document', 'subcategory']
+        fields = ['name', 'description', 'image', 'document', 'subcategory']
 
 
 class SubCategorySerializer(serializers.ModelSerializer):
@@ -217,7 +164,7 @@ class SubCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SubCategories
-        fields = ['id', 'name', 'description', 'image', 'category', 'subsubcategories']
+        fields = ['name', 'description', 'image', 'category', 'subsubcategories']
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -225,4 +172,4 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Categories
-        fields = ['id', 'name', 'description', 'image', 'subcategories']
+        fields = ['name', 'description', 'image', 'subcategories']
