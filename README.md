@@ -74,7 +74,15 @@ setup.
     MYSQL_PASSWORD='your_password'
     MYSQL_ROOT_PASSWORD='your_root_password'
     MYSQL_DATABASE_NAME='your_database_name'
-    ```
+   
+    AWS_ACCESS_KEY_ID='your_access_key_id'
+    AWS_SECRET_ACCESS_KEY='your_secret_access_key'
+    AWS_S3_BUCKET_NAME='your_bucket_name'
+    AWS_S3_REGION_NAME='your_region_name'
+    AWS_S3_SIGNATURE_VERSION='s3v4'
+    AWS_S3_FILE_OVERWRITE = False 
+   
+   ```
 
 ### Building the Image
 
