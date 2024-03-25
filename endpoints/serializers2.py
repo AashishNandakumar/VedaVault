@@ -173,3 +173,21 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Categories
         fields = ['name', 'description', 'image', 'subcategories']
+
+
+class UserInformationSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=255)
+
+    def validate(self, attrs):
+        try:
+            username = attrs.get('username')
+
+            if username:
+                user = get_object_or_404(User, username=username)
+                attrs['phone_number'] = user.phone_number
+                return attrs
+            else:
+                raise serializers.ValidationError("username is required")
+        except Exception as e:
+            print("Error while fetching user information: ", e)
+            raise Exception(e)

@@ -16,5 +16,6 @@ urlpatterns = [
     path('verify-otp', views2.OTPVerifier.as_view()),
     path('admin-reset-password', views2.AdminResetPassword.as_view()),
     path('generate-file-url', views2.S3UploadView.as_view()),
+    path('get-phone-number', views2.UserInformation.as_view()),
     path('', include(router.urls))
 ]

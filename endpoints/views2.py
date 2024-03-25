@@ -78,7 +78,7 @@ class OTPGenerator(APIView):
             otp = serializer.validated_data.get('otp')
 
             print(f"OTP for phone number {phone_number} for user {username} is:  {otp}")
-            return Response({"Success": f"OTP for {phone_number} is {otp}"})
+            return Response({"Success": "OTP successfully sent to the registered phone number"})
         except Exception as e:
             print("Error occurred while generating OTP: ", e)
             return Response({"Error": "Failed to generate OTP", "ERROR": f"{e}"}, status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -160,3 +160,19 @@ class SubCategoryViewSet(viewsets.ModelViewSet):
 class SubSubCategoryViewSet(viewsets.ModelViewSet):
     queryset = SubSubCategories.objects.all()
     serializer_class = serializers2.SubSubCategorySerializer
+
+
+class UserInformation(APIView):
+
+    def post(self, request):
+        try:
+            serializer = serializers2.UserInformationSerializer(data=request.data)
+
+            serializer.is_valid(raise_exception=True)
+            phone_number = serializer.validated_data.get('phone_number')
+
+            return Response({"Success": "Successfully fetched user information", "phone_number": phone_number}, status.HTTP_200_OK)
+        except Exception as e:
+            print("Error in fetching user information: ", e)
+            return Response({"Error": "Failed to fetch user information", "ERROR": f"{e}"},
+                            status.HTTP_500_INTERNAL_SERVER_ERROR)
