@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from . import serializers2
 from .models import Categories, SubCategories, SubSubCategories
@@ -153,6 +154,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, IsAdminUser)
     queryset = Categories.objects.all()
     serializer_class = serializers2.CategorySerializer
+    parser_classes = (MultiPartParser, FormParser)
 
     # Override the '.destroy()' action to display custom message
     def destroy(self, request, *args, **kwargs):
@@ -167,6 +169,7 @@ class SubCategoryViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, IsAdminUser)
     queryset = SubCategories.objects.all()
     serializer_class = serializers2.SubCategorySerializer
+    parser_classes = (MultiPartParser, FormParser)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -180,6 +183,7 @@ class SubSubCategoryViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, IsAdminUser)
     queryset = SubSubCategories.objects.all()
     serializer_class = serializers2.SubSubCategorySerializer
+    parser_classes = (MultiPartParser, FormParser)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()

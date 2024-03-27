@@ -15,6 +15,7 @@ defusedxml==0.8.0rc2
 Django==5.0.2
 django-cors-headers==4.3.1
 django-redis==5.4.0
+django-storages==1.14.2
 django-templated-mail==1.1.1
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.3.1

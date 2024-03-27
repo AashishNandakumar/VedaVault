@@ -61,11 +61,8 @@ class AdminSigninSerializer(serializers.Serializer):
             if username and password:
                 user = get_object_or_404(User, username=username)
                 if user.check_password(password):
-                    if user.groups.filter(name='Admin').exists():
-                        data['user'] = user
-                        return data
-                    else:
-                        raise Exception("User is not Admin")
+                    data['user'] = user
+                    return data
                 else:
                     raise Exception("Passwords do not match")
 
@@ -155,6 +152,9 @@ class AdminResetPasswordSerializer(serializers.Serializer):
 
 
 class SubSubCategorySerializer(serializers.ModelSerializer):
+    image = serializers.FileField(required=False)
+    document = serializers.FileField(required=False)
+
     class Meta:
         model = SubSubCategories
         fields = ['name', 'description', 'image', 'document', 'subcategory']
@@ -162,6 +162,7 @@ class SubSubCategorySerializer(serializers.ModelSerializer):
 
 class SubCategorySerializer(serializers.ModelSerializer):
     subsubcategories = SubSubCategorySerializer(many=True, read_only=True)
+    image = serializers.FileField(required=False)
 
     class Meta:
         model = SubCategories
@@ -170,6 +171,7 @@ class SubCategorySerializer(serializers.ModelSerializer):
 
 class CategorySerializer(serializers.ModelSerializer):
     subcategories = SubCategorySerializer(many=True, read_only=True)
+    image = serializers.FileField(required=False)
 
     class Meta:
         model = Categories
