@@ -23,11 +23,12 @@ class AdminSignupSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(
             username=validated_data['username'],
             password=validated_data['password'],
-            phone_number=validated_data['phone_number']
+            phone_number=validated_data['phone_number'],
+            is_staff=True
         )
 
-        admin_group = Group.objects.get(name='Admin')
-        user.groups.add(admin_group)
+        # admin_group = Group.objects.get(name='Admin')
+        # user.groups.add(admin_group)
 
         user.save()
         return user

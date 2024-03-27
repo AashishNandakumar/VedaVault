@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 from . import views2
 from .views2 import CategoryViewSet, SubCategoryViewSet, SubSubCategoryViewSet
 
+# URL construction is handled automatically with a router class.
 router = DefaultRouter()
 router.register(r'categories', CategoryViewSet)
 router.register(r'subcategories', SubCategoryViewSet)

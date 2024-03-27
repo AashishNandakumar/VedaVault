@@ -176,8 +176,8 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle',
     ],
     "DEFAULT_THROTTLE_RATES": {
-        'anon': '20/minute',
-        'user': '10/minute'
+        'anon': '500/minute',
+        'user': '500/minute'
     }
 }
 
@@ -188,8 +188,8 @@ DJOSER = {
 
 # Simple_JWT: Used along with djoser to provide JWT tokens
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=5),  # access tokens: used in API calls for resource fetching(auth purposes)
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=50),  # refresh tokens: used to generate access tokens after its(access tokens) expiry
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=50),  # access tokens: used in API calls for resource fetching(auth purposes)
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=60),  # refresh tokens: used to generate access tokens after its(access tokens) expiry
     'ROTATE_REFRESH_TOKEN': False,  # when you generate new access tokens from refresh tokens, the output contains both new refresh and access tokens, but I only want new access tokens and not new refresh tokens so  do this.
 }
 

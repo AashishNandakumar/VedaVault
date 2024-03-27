@@ -6,6 +6,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from . import serializers2
 from .models import Categories, SubCategories, SubSubCategories
@@ -147,19 +148,45 @@ class S3UploadView(APIView):
         return Response({'file_url': file_url}, status.HTTP_201_CREATED)
 
 
+# ViewSets are a type of CBV which provides actions (.list(), .create(), ...) instead of method handlers(.get(), .post(), ...)
 class CategoryViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated, IsAdminUser)
     queryset = Categories.objects.all()
     serializer_class = serializers2.CategorySerializer
 
+    # Override the '.destroy()' action to display custom message
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        name = instance.name
+
+        self.perform_destroy(instance)
+        return Response({'SUCCESS': f'successfully deleted category - {name}'})
+
 
 class SubCategoryViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated, IsAdminUser)
     queryset = SubCategories.objects.all()
     serializer_class = serializers2.SubCategorySerializer
 
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        name = instance.name
+
+        self.perform_destroy(instance)
+        return Response({'SUCCESS': f'successfully deleted category - {name}'})
+
 
 class SubSubCategoryViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated, IsAdminUser)
     queryset = SubSubCategories.objects.all()
     serializer_class = serializers2.SubSubCategorySerializer
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        name = instance.name
+
+        self.perform_destroy(instance)
+        return Response({'SUCCESS': f'successfully deleted category - {name}'})
 
 
 class UserInformation(APIView):
@@ -171,7 +198,8 @@ class UserInformation(APIView):
             serializer.is_valid(raise_exception=True)
             phone_number = serializer.validated_data.get('phone_number')
 
-            return Response({"Success": "Successfully fetched user information", "phone_number": phone_number}, status.HTTP_200_OK)
+            return Response({"Success": "Successfully fetched user information", "phone_number": phone_number},
+                            status.HTTP_200_OK)
         except Exception as e:
             print("Error in fetching user information: ", e)
             return Response({"Error": "Failed to fetch user information", "ERROR": f"{e}"},
