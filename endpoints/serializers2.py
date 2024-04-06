@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
-from .models import Categories, SubCategories, SubSubCategories
+from .models import Categories, SubCategories, SubSubCategories, Books
 from .utlis.cache import RedisCache
 from .utlis.send_sms import SMSClient
 
@@ -194,3 +194,11 @@ class UserInformationSerializer(serializers.Serializer):
         except Exception as e:
             print("Error while fetching user information: ", e)
             raise Exception(e)
+
+
+class BookSerializer(serializers.ModelSerializer):
+    image = serializers.FileField(required=False)
+    class Meta:
+        model = Books
+        fields = ['name', 'description', 'price', 'image']
+

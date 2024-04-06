@@ -73,3 +73,12 @@ class SubSubCategories(models.Model):
     image = models.FileField(upload_to='subsubcategory_images/')
     document = models.FileField(upload_to='subsubcategory_documents/')
     subcategory = models.ForeignKey(SubCategories, on_delete=models.CASCADE, related_name='subsubcategories')
+
+
+class Books(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    price = models.FloatField()
+    image = models.FileField(upload_to='books_images/')
+
+    # TODO: dealing with the book object

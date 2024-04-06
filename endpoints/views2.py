@@ -3,14 +3,14 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework.parsers import MultiPartParser, FormParser
 
 from . import serializers2
-from .models import Categories, SubCategories, SubSubCategories
+from .models import Categories, SubCategories, SubSubCategories, Books
 
 User = get_user_model()
 
@@ -208,3 +208,10 @@ class UserInformation(APIView):
             print("Error in fetching user information: ", e)
             return Response({"Error": "Failed to fetch user information", "ERROR": f"{e}"},
                             status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class BookViewSet(viewsets.ModelViewSet):
+    # permission_classes = None
+    queryset = Books.objects.all()
+    serializer_class = serializers2.BookSerializer
+    parser_classes = (MultiPartParser, FormParser)
