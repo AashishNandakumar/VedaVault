@@ -111,6 +111,14 @@ DATABASES = {
     }
 }
 
+if 'test' in sys.argv:  # while running tests, use this database configurations
+    DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': ':memory:',
+            }
+    }
+
 # Cache configuration for handling OTP generation and validation
 CACHES = {
     'default': {
