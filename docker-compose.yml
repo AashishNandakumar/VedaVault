@@ -2,7 +2,7 @@ version: '3.8'  # docker-compose version
 
 services:  # defines the containers that will run as a part of your application
   db:  # this is 'db' service container
-    image: mysql:latest  # the mysql version on my dev environment becomes the base image of this container
+    image: vedavault/mysql:latest  # the mysql version on my dev environment becomes the base image of this container
     volumes:
       - mysql_data:/var/lib/mysql  # mount 'mysql_data' to 'var/lib/mysql' inside the container this is where mysql stores data
     restart: always  # if container stops or crashes it will restart(policy)
@@ -21,7 +21,7 @@ services:  # defines the containers that will run as a part of your application
     command: --default-authentication-plugin=caching_sha2_password
 
   redis:
-    image: redis:latest  # use the latest image of redis
+    image: vedavault/redis:latest  # use the latest image of redis
     restart: always  # always restart when the container crashes or stops
     ports:
       - "6379:6379"  # map port 6379(on host) to 6379(in the container)
@@ -30,6 +30,7 @@ services:  # defines the containers that will run as a part of your application
 
   web:
     build: .  # build an image for this 'web' service using the 'Dockerfile' in the current directory
+    image: vedavault/web:latest
     command: sh -c "wait-for-it --timeout=60 db:3306 && wait-for-it redis:6379 -- python manage.py makemigrations && python manage.py migrate && 
       python manage.py create_admin_group && 
       python manage.py runserver 0.0.0.0:8000"  # this runs the django dev server on all network interfaces at port 8000
